@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <title>Home Page</title>
+    <style>
+        .chatMsg {
+            width: fit-content;
+            max-width: 350px;
+            border-radius: 22.5px;
+        }
+
+        .sender {
+            background: rgb(209, 248, 117);
+        }
+
+        .receiver {
+            background: lightcoral;
+        }
+
+        .notification {
+            background: rgba(219, 219, 219, 0.459);
+            color: rgb(0, 140, 255);
+            border-radius: 22.5px;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container p-3">
+        <div class="row d-flex justify-content-around">
+            <h1>Welcome</h1>
+            <button class="btn btn-primary" id="logout">Logout</button>
+        </div>
+    </div>
+    <hr class="hr">
+    <div class="container-fluid p-3 row">
+        <div class="col-lg-4 col-12" id='all-accounts'>
+            <h3 class="h3">All Accounts</h3>
+            <!-- <div class="card m-1" style="border-radius: 10px;">
+                <div class="card-body d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Daksh Sethi</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Client</h6>
+                    </div>
+                    <div>
+                        <a href="#" class="card-link btn btn-primary float-right" style="border-radius: 22.5px;">Message</a>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <div class="col-lg-8 col-12">
+            <div class="card">
+                <div class="card-header" id='chat_name'>
+                    
+                </div>
+                <div class="card-body" style="height: 65vh; max-height: 65vh; overflow-y: scroll;" id='chat_box'>
+                    <!-- <div class="col-12 d-flex justify-content-center">
+                        <div class="px-5 py-1 notification">
+                            🛈 Daksh changed his zip code to 306
+                        </div>
+                    </div> -->
+                </div>
+                <div class="card-footer">
+                    <form id='sendMsg'>
+                        <div class="form-group d-flex mb-0">
+                            <input type="text" class="form-control" name="text" placeholder="Type message here...">
+                            <button class="btn btn-success">Send</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-firestore.js"></script>
+    <script src="auth.js"></script>
+    <script src="authState.js"></script>
+    <script src="home.js"></script>
+</body>
+</html>
