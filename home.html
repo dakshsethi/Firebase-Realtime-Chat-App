@@ -9,10 +9,16 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <title>Home Page</title>
     <style>
+        .chatBox {
+            height: 62vh;
+            max-height: 65vh;
+            overflow-y: scroll;
+        }
+
         .chatMsg {
             width: fit-content;
             max-width: 350px;
-            border-radius: 22.5px;
+            border-radius: 7.5px;
         }
 
         .sender {
@@ -29,10 +35,17 @@
             border-radius: 22.5px;
             max-width: 100%;
         }
+
+        .not-seen {
+            color: gray;
+        }
+
+        .seen {
+            color: #3686ff;
+        }
     </style>
 </head>
 <body>
-    
     <div class="container p-3">
         <div class="row d-flex justify-content-around">
             <h1>Welcome</h1>
@@ -43,29 +56,55 @@
     <div class="container-fluid p-3 row">
         <div class="col-lg-4 col-12" id='all-accounts'>
             <h3 class="h3">All Accounts</h3>
-            <!-- <div class="card m-1" style="border-radius: 10px;">
+            <div class="card m-1" style="border-radius: 10px;">
                 <div class="card-body d-flex justify-content-between">
                     <div>
                         <h5 class="card-title">Daksh Sethi</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Client</h6>
                     </div>
                     <div>
+                        <span class="btn btn-primary mx-1" style="border-radius: 50%;">11</span>
                         <a href="#" class="card-link btn btn-primary float-right" style="border-radius: 22.5px;">Message</a>
                     </div>
                 </div>
-            </div> -->
+            </div>
         </div>
         <div class="col-lg-8 col-12">
             <div class="card">
-                <div class="card-header" id='chat_name'>
-                    
+                <div class="card-header d-flex justify-content-between">
+                    <div id="chat_name"></div>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#staticBackdrop">
+                        Make Contract
+                    </button>
                 </div>
-                <div class="card-body" style="height: 65vh; max-height: 65vh; overflow-y: scroll;" id='chat_box'>
+                <div class="card-body chatBox" id='chat_box'>
                     <!-- <div class="col-12 d-flex justify-content-center">
                         <div class="px-5 py-1 notification">
                             🛈 Daksh changed his zip code to 306
                         </div>
                     </div> -->
+                    <!-- <div class="col-12 d-flex justify-content-end m-0" data-id="S9y3Xwvk0c3qlX6Ka749">
+                        <div class="py-2 px-3 my-2 chatMsg sender">
+                            Hi
+                            <span style="color: #3686ff;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 15" width="16" height="15">
+                                    <path fill="currentColor" d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"></path>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-12 d-flex justify-content-end m-0" data-id="S9y3Xwvk0c3qlX6Ka749">
+                        <div class="py-2 px-3 my-2 chatMsg sender">
+                            Hello
+                            <span style="color: #3686ff;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 15" width="16" height="15">
+                                    <path fill="currentColor" d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"></path>
+                                </svg>
+                            </span>
+                        </div>
+                    </div> -->
+
                 </div>
                 <div class="card-footer">
                     <form id='sendMsg'>
@@ -79,11 +118,166 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Make Contract</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="container">
+                    <div class="col-12 d-flex justify-content-center">
+                        <img src="logo.png" class="img-fluid" alt="">
+                    </div>
+                    <form>
+                    <div class="form-row">
+
+                        <div class="col-12">
+                            <div class="row d-flex justify-content-around my-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="type" id="type" value="crew">
+                                    <label class="form-check-label" for="type">CREW</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="type" id="type" value="client">
+                                    <label class="form-check-label" for="type" >CLIENT</label>
+                                </div>
+                            </div>
+                            <!-- if(data-value==0 && value!=data-value)
+                                printf("first time entry")
+                            if(data-value!=0 && value!=data-value) {
+                                {
+                                    uid: 6482364,
+                                    zip: 306
+                                }
+                            } -->
+                        </div>
+                        <div class="col-12">
+                            <h5 class="h5">Crew Details</h5>
+                            <div class="form-group row">
+                                <label for="crew-name" class="col-form-label col-lg-3">Crew Name</label>
+                                <input type="text" class="form-control col-lg-9" id="crew-name" placeholder="To be displayed on contract" required>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="crew-contact-no" class="col-form-label col-lg-3">Crew Contact No.</label>
+                                <div class="input-group col-lg-9">
+                                    <div class="input-group-prepend">
+                                      <div class="input-group-text">+91</div>
+                                    </div>
+                                    <input type="number" class="form-control" id="crew-contact-number" minlength="10" maxlength="10" placeholder="Write without country code" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="crew-email" class="col-form-label col-lg-3">Crew Email</label>
+                                <input type="email" class="form-control col-lg-9" id="crew-email" placeholder="Enter crew email" required>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-lg-4">
+                                    <label for="crew-country">Country</label>
+                                    <input type="text" class="form-control" id="crew-country" required>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label for="crew-state">State</label>
+                                    <input type="text" class="form-control" id="crew-state" required>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label for="crew-city">City</label>
+                                    <input type="text" class="form-control" id="crew-city" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="crew-zip" class="col-form-label col-lg-3">Zip/Postal code</label>
+                                <input type="number" class="form-control col-lg-9" id="crew-zip" minlength="6" maxlength="6" required>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="crew-residence-address" class="col-form-label col-lg-3">Residence Address</label>
+                                <textarea class="form-control col-lg-9" id="crew-residence-address" rows="3"></textarea>
+                            </div>
+
+                            <hr class="my-5">
+
+                            <h5 class="h5">Client Details</h5>
+                            <div class="form-group row">
+                                <label for="client-name" class="col-form-label col-lg-3">Client Name</label>
+                                <input type="text" class="form-control col-lg-9" id="client-name" placeholder="To be displayed on contract" required>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="client-contact-no" class="col-form-label col-lg-3">Client Contact No.</label>
+                                <div class="input-group col-lg-9">
+                                    <div class="input-group-prepend">
+                                      <div class="input-group-text">+91</div>
+                                    </div>
+                                    <input type="number" class="form-control" id="client-contact-number" minlength="10" maxlength="10" placeholder="Write without country code" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="client-email" class="col-form-label col-lg-3">Client Email</label>
+                                <input type="email" class="form-control col-lg-9" id="client-email" placeholder="Enter clientemail" required>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-lg-4">
+                                    <label for="client-country">Country</label>
+                                    <input type="text" class="form-control" id="client-country" required>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label for="client-state">State</label>
+                                    <input type="text" class="form-control" id="client-state" required>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label for="client-city">City</label>
+                                    <input type="text" class="form-control" id="client-city" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="client-zip" class="col-form-label col-lg-3">Zip/Postal code</label>
+                                <input type="number" class="form-control col-lg-9" id="client-zip" minlength="6" maxlength="6" required>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="client-residence-address" class="col-form-label col-lg-3">Residence Address</label>
+                                <textarea class="form-control col-lg-9" id="client-residence-address" rows="3"></textarea>
+                            </div>
+
+                            <button type="button" class="btn btn-primary btn-lg mb-3" style="border-radius: 22.5px;">NEXT</button>
+
+                            <h6 class="h6">*Saved by end-to-end encryption.</h6>
+                            <h6 class="h6">*Read Contact <a href="">Rules and Regulation</a> or <a href="">FAQs</a> here.</h6>
+
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Understood</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-firestore.js"></script>
     <script src="auth.js"></script>
     <script src="authState.js"></script>
     <script src="home.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
 </body>
 </html>

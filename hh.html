@@ -18,7 +18,7 @@
     
     <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-content">
             <div class="modal-header">
             <h5 class="modal-title" id="staticBackdropLabel">Make Contract</h5>
@@ -54,6 +54,49 @@
                                     zip: 306
                                 }
                             } -->
+                        </div>
+                        <div class="container-fluid">
+                            <h5 class="h5">Crew Details</h5>
+                            <div class="row">
+
+                                <div class="form-group col-lg-4">
+                                    <label for="crew-name" class="col-form-label">Crew Name</label>
+                                    <input type="text" class="form-control" id="crew-name" placeholder="To be displayed on contract" required>
+                                </div>
+
+                                <div class="form-group col-lg-4">
+                                    <label for="crew-contact-no" class="col-form-label">Crew Contact No.</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                          <div class="input-group-text">+91</div>
+                                        </div>
+                                        <input type="number" class="form-control" id="crew-contact-number" minlength="10" maxlength="10" placeholder="Write without country code" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-lg-4">
+                                    <label for="crew-email" class="col-form-label">Crew Email</label>
+                                    <input type="email" class="form-control" id="crew-email" placeholder="Enter crew email" required>
+                                </div>
+
+                                <div class="form-group col-lg-4">
+                                </form>
+                                    <div class="col-lg-4">
+                                        <label for="crew-country">Country</label>
+                                        <input type="text" class="form-control" id="crew-country" required>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label for="crew-state">State</label>
+                                        <input type="text" class="form-control" id="crew-state" required>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label for="crew-city">City</label>
+                                        <input type="text" class="form-control" id="crew-city" required>
+                                    </div>
+                                </div>
+
+                            </div>
+
                         </div>
                         <div class="col-12">
                             <h5 class="h5">Crew Details</h5>

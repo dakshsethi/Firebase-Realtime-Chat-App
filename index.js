@@ -31,7 +31,7 @@ signup.addEventListener('submit', (e) => {
             uid: cred.user.uid,
             name: name,
             email: email,
-            type: type
+            type: type,
         }).catch(error => {
             console.log('error');
         });
@@ -39,7 +39,7 @@ signup.addEventListener('submit', (e) => {
         if(error.code == 'auth/email-already-in-use')
             alert(error.message);
         else if(error.code == 'auth/weak-password')
-            alert(error.message)
+            alert(error.message);
     });
 
     signup.name.value = '';

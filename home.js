@@ -1,7 +1,7 @@
 const all = document.querySelector('#all-accounts');
 
 //Creating User Elememt and Render List
-function renderList(doc) {
+function renderList(sender, doc) {
 
     // <div class="card m-1" style="border-radius: 10px;">
     //     <div class="card-body d-flex justify-content-between">
@@ -55,6 +55,37 @@ function renderList(doc) {
     card_body.appendChild(div2);
     div1.appendChild(h5);
     div1.appendChild(h6);
+
+    // <span class="btn btn-primary mx-1" style="border-radius: 50%;">11</span>
+    let unseen_msg = document.createElement('SPAN');
+    unseen_msg.classList.add('btn');
+    unseen_msg.classList.add('btn-primary');
+    unseen_msg.classList.add('mx-1');
+    unseen_msg.style.borderRadius = '50%';
+
+    
+    const receiver = a.dataset.id;
+    // console.log(receiver);
+    const user = [sender, receiver];
+    user.sort();
+    console.log(user);
+    db.collection('message').where('user','==',user).where('sid','==',receiver).get().then(snapshot => {
+        let messages = snapshot.docChanges();
+        //console.log(messages);
+        let count = 0;
+        messages.forEach(message => {
+            console.log(message);
+            if(messages.type == 'added' || message.type == 'modified')
+                count++;
+            count++;
+            //console.log(count);
+        })
+        if(count!=0) {
+            unseen_msg.textContent = count;
+            div2.appendChild(unseen_msg);
+        }
+    })
+
     div2.appendChild(a);
 
     all.appendChild(card);
@@ -80,7 +111,7 @@ function gettingData(id) {
             //     let text = itemList.querySelector('[data-id=' + change.doc.id + ']');
             //     itemList.removeChild(text);
             // }
-            renderList(change.doc);
+            renderList(id, change.doc);
         })
     });
 }
@@ -112,13 +143,36 @@ function updateData() {
     console.log('receiver = ' + receiver);
     console.log('sender   = ' + sender);
     
+    const user = [sender, receiver];
+    user.sort();
+    
+    
     //Get the user's chat with the above id
     getChatData(sender, receiver);
+
+    //Make all the messages as seen
+    db.collection('message').where('user','==',user).where('sid','==',receiver).where('seen','==',false).onSnapshot(snapshot => {
+        let messages = snapshot.docChanges();
+        messages.forEach(message => {
+            const msgid = message.doc.id;
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const r = urlParams.get('id');
+            if(r == receiver) {
+                db.collection('message').doc(msgid).update({
+                    seen: true
+                });
+            }
+            // Set the "capital" field of the city 'DC'
+            // db.collection("cities").doc("DC").update({
+            //     capital: true
+            // });
+        });
+    })
 }
 
-
-let x = 0;
 async function getChatData(sender, receiver) {
+    //Printing the receiver
     db.collection('userDetails').doc(receiver).get().then(info => {
         var data = info.data();
         // console.log(data);
@@ -128,12 +182,21 @@ async function getChatData(sender, receiver) {
 
     const user = [sender, receiver];
     user.sort();
-    console.log(user);
+
     db.collection('message').where('user','==',user).orderBy('timestamp').onSnapshot(snapshot => {
         let messages = snapshot.docChanges();
         messages.forEach(message => {
-            if(message.type == 'added')
-                renderChat(sender, receiver, message);
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const r = urlParams.get('id');
+            if(r == receiver) {
+                if(message.type == 'added')
+                    renderChat(sender, receiver, message);
+                if(message.type == 'modified' && message.doc.data().seen == true) {
+                    const tick = document.getElementById(message.doc.id);
+                    tick.style.color = '#3686ff';
+                }
+            }
         })
     })
 }
@@ -148,18 +211,41 @@ function renderChat(sender, receiver, message) {
     col12.classList.add('d-flex');
     col12.setAttribute('data-id',message.doc.id);
 
+    const x = chat_box.lastChild;
+    if(x!=null) {
+        const ele = x.firstChild;
+        if((ele.classList.contains('sender') && msg.sid==sender) || (ele.classList.contains('receiver') && msg.sid==receiver))
+            col12.style.marginTop = '-14px';
+    }
+
     let msgBox = document.createElement("DIV");
+
+    let ti = document.createElement("SPAN");
+    ti.setAttribute('id',message.doc.id);
+
+    let tick = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 15" width="16" height="15">
+                    <path fill="currentColor" d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"></path>
+                </svg>`;
+
     if(msg.type==1) {
         msgBox.classList.add('py-2');
         msgBox.classList.add('px-3');
         msgBox.classList.add('my-2');
         msgBox.classList.add('chatMsg');
-        msgBox.textContent = msg.message;
+        msgBox.innerHTML = msg.message;
 
         if(msg.sid == sender) {
             col12.classList.add('justify-content-end');
             
             msgBox.classList.add('sender');
+            msgBox.innerHTML = msg.message;
+            msgBox.appendChild(ti);
+            ti.innerHTML = tick;
+            if(msg.seen == true) {
+                ti.style.color = '#3686ff';
+            } else {
+                ti.style.color = 'gray';
+            }
             
         } else {
             msgBox.classList.add('receiver');
@@ -176,6 +262,9 @@ function renderChat(sender, receiver, message) {
 
     col12.appendChild(msgBox);
     chat_box.appendChild(col12);
+
+    var ele = document.querySelector('#chat_box');
+    ele.scrollIntoView(false); // Bottom
 }
 
 
@@ -201,7 +290,8 @@ add.addEventListener('submit', (e) => {
         type: 1,
         sid: sender,
         message: message,
-        timestamp: timestamp
+        timestamp: timestamp,
+        seen: false
     }).catch(error => {
         console.log(error);
     });
