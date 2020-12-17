@@ -65,25 +65,32 @@ function renderList(sender, doc) {
 
     
     const receiver = a.dataset.id;
-    // console.log(receiver);
     const user = [sender, receiver];
     user.sort();
     console.log(user);
-    db.collection('message').where('user','==',user).where('sid','==',receiver).get().then(snapshot => {
+
+    // db.collection('message').where('user','==',user).where('sid','==',receiver).get().then(snapshot => {
+    //     let messages = snapshot.docChanges();
+    //     //console.log(messages);
+    //     let count = 0;
+    //     messages.forEach(message => {
+    //         console.log(message);
+    //         if(messages.type == 'added' || message.type == 'modified')
+    //             count++;
+    //         count++;
+    //         //console.log(count);
+    //     })
+    //     if(count!=0) {
+    //         unseen_msg.textContent = count;
+    //         div2.appendChild(unseen_msg);
+    //     }
+    // })
+
+    db.collection('message').where('user','==',user).get().then(snapshot => {
         let messages = snapshot.docChanges();
-        //console.log(messages);
-        let count = 0;
         messages.forEach(message => {
-            console.log(message);
-            if(messages.type == 'added' || message.type == 'modified')
-                count++;
-            count++;
-            //console.log(count);
+            console.log(message.doc.data().message);
         })
-        if(count!=0) {
-            unseen_msg.textContent = count;
-            div2.appendChild(unseen_msg);
-        }
     })
 
     div2.appendChild(a);
@@ -151,7 +158,11 @@ function updateData() {
     getChatData(sender, receiver);
 
     //Make all the messages as seen
-    db.collection('message').where('user','==',user).where('sid','==',receiver).where('seen','==',false).onSnapshot(snapshot => {
+    msgSeen(user, receiver);
+}
+
+function msgSeen(user, receiver) {
+    db.collection('message').where('user','==',user).where('sid','==',receiver).where('seen','==',false).orderBy('timestamp').onSnapshot(snapshot => {
         let messages = snapshot.docChanges();
         messages.forEach(message => {
             const msgid = message.doc.id;
@@ -163,10 +174,6 @@ function updateData() {
                     seen: true
                 });
             }
-            // Set the "capital" field of the city 'DC'
-            // db.collection("cities").doc("DC").update({
-            //     capital: true
-            // });
         });
     })
 }
@@ -192,10 +199,6 @@ async function getChatData(sender, receiver) {
             if(r == receiver) {
                 if(message.type == 'added')
                     renderChat(sender, receiver, message);
-                if(message.type == 'modified' && message.doc.data().seen == true) {
-                    const tick = document.getElementById(message.doc.id);
-                    tick.style.color = '#3686ff';
-                }
             }
         })
     })
