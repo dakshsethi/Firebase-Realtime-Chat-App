@@ -1,7 +1,7 @@
 const all = document.querySelector('#all-accounts');
 
 //Creating User Elememt and Render List
-function renderList(sender, doc) {
+function renderList(doc) {
 
     // <div class="card m-1" style="border-radius: 10px;">
     //     <div class="card-body d-flex justify-content-between">
@@ -18,6 +18,8 @@ function renderList(sender, doc) {
     let card = document.createElement('DIV');
     card.classList.add('card');
     card.classList.add('m-1');
+    card.classList.add('userinfo');
+    card.setAttribute('data-id',doc.id)
     card.style.borderRadius = '10px';
 
     let card_body = document.createElement("DIV");
@@ -39,6 +41,13 @@ function renderList(sender, doc) {
     else
         h6.textContent = 'Client';
 
+    let unseen_msg = document.createElement('SPAN');
+    unseen_msg.classList.add('badge');
+    unseen_msg.classList.add('badge-success');
+    unseen_msg.classList.add('mx-1');
+    // unseen_msg.style.borderRadius = '50%';
+    //unseen_msg.style.transform = 'scale(0.8)';
+
 
     let div2 = document.createElement('DIV');
     let a = document.createElement('A');
@@ -55,45 +64,29 @@ function renderList(sender, doc) {
     card_body.appendChild(div2);
     div1.appendChild(h5);
     div1.appendChild(h6);
-
-    // <span class="btn btn-primary mx-1" style="border-radius: 50%;">11</span>
-    let unseen_msg = document.createElement('SPAN');
-    unseen_msg.classList.add('btn');
-    unseen_msg.classList.add('btn-primary');
-    unseen_msg.classList.add('mx-1');
-    unseen_msg.style.borderRadius = '50%';
+    div2.appendChild(unseen_msg);
+    div2.appendChild(a);
 
     
     const receiver = a.dataset.id;
+    const sender = document.querySelector('#logout').dataset.uid;
     const user = [sender, receiver];
     user.sort();
-    console.log(user);
 
-    // db.collection('message').where('user','==',user).where('sid','==',receiver).get().then(snapshot => {
+    //Code to be removed
+    // let count = 0;
+    // db.collection('message').where('user','==',user).where('sid','==',receiver).where('seen','==',false).onSnapshot(snapshot => {
     //     let messages = snapshot.docChanges();
-    //     //console.log(messages);
-    //     let count = 0;
     //     messages.forEach(message => {
-    //         console.log(message);
-    //         if(messages.type == 'added' || message.type == 'modified')
+    //         if(message.type=='added')
+    //         if (message.type == 'modified' && message.seen == false) {
     //             count++;
-    //         count++;
-    //         //console.log(count);
+    //             if(count>=1)
+    //                 if(unseen_msg.textContent == null)
+    //                     unseen_msg.innerHTML = 1;
+    //         }
     //     })
-    //     if(count!=0) {
-    //         unseen_msg.textContent = count;
-    //         div2.appendChild(unseen_msg);
-    //     }
-    // })
-
-    db.collection('message').where('user','==',user).get().then(snapshot => {
-        let messages = snapshot.docChanges();
-        messages.forEach(message => {
-            console.log(message.doc.data().message);
-        })
-    })
-
-    div2.appendChild(a);
+    // });
 
     all.appendChild(card);
 
@@ -102,7 +95,7 @@ function renderList(sender, doc) {
         e.preventDefault();
 
         //Changing the url
-        changeURL(a.dataset.id);
+        changeURL(a.dataset.id, unseen_msg);
     })
 
 }
@@ -118,12 +111,15 @@ function gettingData(id) {
             //     let text = itemList.querySelector('[data-id=' + change.doc.id + ']');
             //     itemList.removeChild(text);
             // }
-            renderList(id, change.doc);
+            renderList(change.doc);
         })
+    }).then(() => {
+        showUnseenChatNotif();
     });
+
 }
 
-function changeURL(id) {
+function changeURL(id, unseen_msg) {
     // Construct URLSearchParams object instance from current URL querystring.
     var queryParams = new URLSearchParams(window.location.search);
         
@@ -159,6 +155,15 @@ function updateData() {
 
     //Make all the messages as seen
     msgSeen(user, receiver);
+
+    let card = '';
+    const ele = document.querySelectorAll('.userinfo');
+    ele.forEach(elem => {
+        if(elem.dataset.id == receiver)
+            card = elem;
+    });
+    let span = card.lastChild.lastChild.firstChild;
+    span.textContent = null;
 }
 
 function msgSeen(user, receiver) {
@@ -199,6 +204,11 @@ async function getChatData(sender, receiver) {
             if(r == receiver) {
                 if(message.type == 'added')
                     renderChat(sender, receiver, message);
+                if(message.type == 'modified' && message.doc.data().seen == true && message.doc.data().sid == sender) {
+                    const tick = document.getElementById(message.doc.id);
+                    console.log(tick, message.doc.id);
+                    tick.style.color = '#3686ff';
+                }
             }
         })
     })
@@ -301,3 +311,29 @@ add.addEventListener('submit', (e) => {
 
     add.text.value = '';
 })
+
+
+function showUnseenChatNotif() {
+    var cards = document.querySelectorAll('.userinfo');
+    var sid = [];
+
+    cards.forEach(card => {
+        // console.log(card.dataset.id);
+        sid.push(card.dataset.id);
+    });
+
+    // console.log(sid);
+    // let time = Date.now();
+    // db.collection('message').where('sid','in',sid).where('seen','==',false).orderBy('timestamp').onSnapshot(snapshot => {
+    //     let changes = snapshot.docChanges();
+    //     // console.log('length = ' + changes.length);
+    //     // console.log('time = ' + time);
+    //     changes.forEach(change => {
+    //         // console.log('timestamp = ' + change.doc.data().timestamp);
+    //         if(change.type == 'added' && change.doc.data().timestamp > time)
+    //             alert('New Message!');
+    //     })
+    // })
+
+
+}
